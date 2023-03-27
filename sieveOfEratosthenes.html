@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <style>
+             td{
+                    border: 1px solid black;
+                    margin: 0px;
+                    padding: 0px;
+                    text-align: center;
+                    font-size: 10px;
+                    font-weight: bold;
+                }
+
+                table{
+                    border-collapse: collapse;
+                }
+                body{
+                padding:0px;
+                margin:0px;
+                border:0px;
+                }
+                h1{
+                    font-size: 18px;
+                }
+                #step,#prime{
+                font-weight: bold; 
+                }
+                .container-fluid{
+                    max-width: 800px;
+                    text-align: center;
+                    margin: auto;
+                }
+                .result{
+                    text-align: left;
+                }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+                <h1>Sieve of Eratosthenes</h1>
+                <table id="table"></table>
+                <br>
+                <div class="result">
+                    <h3>Prime Numbers by Sieve of Eratosthenes Algorithm</h3>
+                    <p>This visulization will auto start</p>
+                    <div id="prime"></div>
+                </div>
+        </div>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', () => {
+                const arr = [];
+                for (let i = 0; i <= 200; i++) {
+                arr.push(1);
+                }
+            
+                arr[0] = 0;
+                arr[1] = 0;
+                const height = window.innerHeight;
+                const width = window.innerWidth;
+            
+                function setGrid() {
+                const table = document.querySelector("#table");
+                table.innerHTML = '';
+                for (let i = 0; i < 10; i++) {
+                    const tr = document.createElement('tr');
+                    for (let j = 0; j < 20; j++) {
+                    const td = document.createElement('td');
+                    td.setAttribute('id', 20 * i + j + 1);
+                    td.setAttribute('height', height / 20);
+                    td.setAttribute('width', width / 20);
+                    td.innerText = 20 * i + j + 1;
+                    tr.appendChild(td);
+                    }
+                    table.appendChild(tr);
+                }
+                }
+            
+                function setPrime(id) {
+                const elem = document.getElementById(id);
+                elem.style.backgroundColor = 'green';
+                }
+            
+                function setNonPrime(id) {
+                const elem = document.getElementById(id);
+                elem.style.backgroundColor = 'red';
+                }
+            
+                function setNonPrimePromise(arr2) {
+                if (arr2[0] <= 200) {
+                    return new Promise((resolve, reject) => {
+                    arr[arr2[0]] = 0;
+                    setNonPrime(arr2[0]);
+                    setTimeout(() => {
+                        resolve(arr2);
+                    }, 100);
+                    }).then((arr2) => {
+                    arr2[0] += arr2[1];
+                    setNonPrimePromise(arr2);
+                    });
+                } else {
+                    setPrimePromise(arr2[1] + 1);
+                }
+                }
+            
+                function setPrimePromise(i) {
+                if (i <= 200 && arr[i]) {
+                    return new Promise((resolve, reject) => {
+                    const prime = document.querySelector('#prime');
+                    prime.innerHTML += ` ${i},`;
+                    setPrime(i);
+                    setTimeout(() => {
+                        setNonPrimePromise([i + i, i]);
+                    }, 100);
+                    });
+                } else if (i <= 200) {
+                    setTimeout(() => {
+                    setPrimePromise(i + 1);
+                    }, 100);
+                }
+                }
+
+                setTimeout(() => {
+                    setNonPrime(1);
+                    setPrimePromise(2);
+                    const prime = document.querySelector('#prime');
+                }, 100);
+            
+                setGrid();
+            });
+        </script>
+    </body>
+</html>
